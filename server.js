@@ -70,4 +70,4 @@ app.put('/api/products/:id', verify, async (req, res) => {
   res.json(p);
 });
 
-app.listen(PORT, () => console.log("http://localhost:" + PORT));
+app.listen(PORT, () => console.log("Servidor corriendo en puerto " + PORT));
