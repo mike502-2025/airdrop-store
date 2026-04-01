@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // 🔥 CONEXIÓN MONGODB mongod
-mongoose.connect('mongodb+srv://admin:AirDrop123@cluster0.zqaaapk.mongodb.net/airdrop?retryWrites=true&w=majority');
+mongoose.connect('mongodb+srv://admin:AirDrop123@cluster0.zqaaapk.mongodb.net/?appName=Cluster0');
 // Modelo
 const Product = mongoose.model('Product', {
   name: String,
