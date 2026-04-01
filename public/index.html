@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>AirDrop Empresa</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<header class="bg-black text-white p-4 text-center text-2xl font-bold">
+AirDrop 🧢🎧
+<button onclick="login()" class="ml-4 bg-white text-black px-2 py-1">Admin</button>
+</header>
+
+<main class="p-6">
+
+<div id="admin" class="hidden mb-4">
+<input id="name" placeholder="Nombre" class="border p-2">
+<input id="price" type="number" placeholder="Precio" class="border p-2">
+<input id="image" placeholder="Imagen URL" class="border p-2">
+<button onclick="addProduct()" class="bg-black text-white px-2 py-1">Agregar</button>
+</div>
+
+<div id="products" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+
+</main>
+
+<script>
+let token = '';
+
+// 🔐 LOGIN
+async function login(){
+ const user = prompt('Usuario');
+ const pass = prompt('Contraseña');
+
+ const res = await fetch('/api/login', {
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body: JSON.stringify({user, pass})
+ });
+
+ if(res.ok){
+   const data = await res.json();
+   token = data.token;
+   document.getElementById('admin').classList.remove('hidden');
+   alert('Modo admin activado');
+ } else {
+   alert('Credenciales incorrectas');
+ }
+}
+
+// 📦 CARGAR PRODUCTOS
+async function load(){
+ const res = await fetch('/api/products');
+ const data = await res.json();
+ render(data);
+}
+
+// 🎨 MOSTRAR
+function render(products){
+ const c = document.getElementById('products');
+ c.innerHTML = '';
+
+ products.forEach(p=>{
+  c.innerHTML += `
+  <div class="bg-white p-4 rounded shadow">
+    <img src="${p.image}" class="h-40 w-full object-cover">
+    <h3 class="font-bold">${p.name}</h3>
+    <p>Q${p.price}</p>
+    <p class="${p.stock?'text-green-600':'text-red-600'}">
+      ${p.stock?'Disponible':'Agotado'}
+    </p>
+
+    <a href="https://wa.me/502XXXXXXXX?text=Quiero%20${p.name}" 
+    class="bg-green-500 text-white block text-center mt-2">
+    Comprar
+    </a>
+
+    ${token ? `
+    <button onclick="del('${p._id}')" class="bg-red-500 text-white px-2 py-1 mt-2">Eliminar</button>
+    <button onclick="stock('${p._id}')" class="bg-yellow-500 text-white px-2 py-1 mt-2">Stock</button>
+    `:''}
+  </div>`;
+ });
+}
+
+// ➕ AGREGAR
+async function addProduct(){
+ await fetch('/api/products', {
+  method:'POST',
+  headers:{
+    'Content-Type':'application/json',
+    'Authorization':token
+  },
+  body: JSON.stringify({
+    name: name.value,
+    price: price.value,
+    image: image.value,
+    stock:true
+  })
+ });
+
+ load();
+}
+
+// 🗑 ELIMINAR
+async function del(id){
+ await fetch('/api/products/'+id,{
+  method:'DELETE',
+  headers:{'Authorization':token}
+ });
+ load();
+}
+
+// 🔄 STOCK
+async function stock(id){
+ await fetch('/api/products/'+id,{
+  method:'PUT',
+  headers:{'Authorization':token}
+ });
+ load();
+}
+
+load();
+</script>
+
+</body>
+</html>
