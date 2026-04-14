@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<h1 style="color:red;">CAMBIO DE PRUEBA 🔥</h1>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -10,9 +9,9 @@
 
 <header class="bg-black text-white p-4 flex flex-col md:flex-row items-center justify-between">
 
-  <h1 class="text-2xl font-bold mb-2 md:mb-0">
-    AirDrop Store 🧢🎧⌚
-  </h1>
+  <h1 ondblclick="secretLogin()" class="text-2xl font-bold cursor-pointer">
+  AirDrop Store 🧢🎧
+</h1>
 
   <nav class="flex gap-4 text-sm md:text-base">
     <button onclick="filter('all')" class="hover:text-green-400">Todo</button>
@@ -21,9 +20,9 @@
     <button onclick="filter('relojes')" class="hover:text-green-400">Relojes</button>
   </nav>
 
-  <button onclick="login()" class="bg-white text-black px-3 py-1 rounded-xl mt-2 md:mt-0">
-    Admin
-  </button>
+  <button id="adminBtn" onclick="login()" class="hidden">
+  Admin
+</button>
 
 </header>
 
@@ -42,6 +41,22 @@
 </main>
 
 <script>
+window.onload = () => {
+  if(localStorage.getItem('token')){
+    document.getElementById('adminBtn').classList.remove('hidden');
+  }
+}
+
+function secretLogin(){
+ const clave = prompt("Acceso restringido");
+
+ if(clave === "admin123"){
+   login();
+ } else {
+   alert("Acceso denegado");
+ }
+}
+
 let token = '';
 let currentFilter = 'all';
 
