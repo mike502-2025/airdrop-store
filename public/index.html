@@ -26,11 +26,12 @@
 <main class="p-6">
 
 <div id="admin" class="hidden mb-4">
-<input id="name" placeholder="Nombre" class="border p-2">
-<input id="price" type="number" placeholder="Precio" class="border p-2">
-<input id="image" placeholder="Imagen URL" class="border p-2">
-<input id="category" placeholder="Categoria (gorras, audifonos, relojes)" class="border p-2">
-<button onclick="addProduct()" class="bg-black text-white px-2 py-1">Agregar</button>
+  <input id="name" placeholder="Nombre" class="border p-2">
+  <input id="price" type="number" placeholder="Precio" class="border p-2">
+  <input id="image" placeholder="Imagen URL" class="border p-2">
+  <input id="category" placeholder="Categoria (gorras, audifonos, relojes)" class="border p-2">
+
+  <button onclick="addProduct()" class="bg-black text-white px-2 py-1">Agregar</button>
 </div>
 
 <div id="products" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
@@ -97,9 +98,11 @@ function render(products){
 
  let filtered = products;
 
- if(currentFilter !== 'all'){
-   filtered = products.filter(p => p.category === currentFilter);
- }
+if (currentFilter !== 'all') {
+  filtered = products.filter(p =>
+    (p.category || '').toLowerCase().trim() === currentFilter.toLowerCase().trim()
+  );
+}
 
  filtered.forEach(p=>{
   c.innerHTML += `
@@ -130,24 +133,44 @@ function render(products){
  });
 }
 
-// ➕ AGREGAR
-async function addProduct(){
- await fetch('/api/products', {
-  method:'POST',
-  headers:{
-    'Content-Type':'application/json',
-    'Authorization':token
-  },
-  body: JSON.stringify({
-    name: name.value,
-    price: price.value,
-    image: image.value,
-    category: category.value,
-    stock:true
-  })
- });
+// 🔥 CONECTAR INPUTS
+const name = document.getElementById('name');
+const price = document.getElementById('price');
+const image = document.getElementById('image');
+const category = document.getElementById('category');
 
- load();
+// ➕ AGREGAR
+async function addProduct() {
+
+  // validación básica
+  if (!name.value || !price.value || !image.value || !category.value) {
+    alert('Completa todos los campos');
+    return;
+  }
+
+  await fetch('/api/products', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token
+    },
+    body: JSON.stringify({
+      name: name.value,
+      price: price.value,
+      image: image.value,
+      category: category.value.toLowerCase().trim(),
+      stock: true
+    })
+  });
+
+  // limpiar formulario
+  name.value = '';
+  price.value = '';
+  image.value = '';
+  category.value = '';
+
+  // recargar productos
+  load();
 }
 
 // 🗑 ELIMINAR
