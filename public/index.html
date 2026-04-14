@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<h1 style="color:red;">CAMBIO DE PRUEBA 🔥</h1>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -7,9 +8,9 @@
 </head>
 <body class="bg-gray-100">
 
-<header class="bg-black text-white p-4 text-center text-2xl font-bold">
-AirDrop 🧢🎧
-<button onclick="login()" class="ml-4 bg-white text-black px-2 py-1">Admin</button>
+<header class="bg-black text-white p-4 text-center text-3xl font-bold shadow-lg">
+AirDrop Store 🧢🎧
+<button onclick="login()" class="ml-4 bg-white text-black px-3 py-1 rounded-xl text-sm">Admin</button>
 </header>
 
 <main class="p-6">
@@ -63,23 +64,29 @@ function render(products){
 
  products.forEach(p=>{
   c.innerHTML += `
-  <div class="bg-white p-4 rounded shadow">
-    <img src="${p.image}" class="h-40 w-full object-cover">
-    <h3 class="font-bold">${p.name}</h3>
-    <p>Q${p.price}</p>
-    <p class="${p.stock?'text-green-600':'text-red-600'}">
+  <div class="bg-white p-4 rounded-2xl shadow-lg hover:shadow-2xl transition">
+
+    <img src="${p.image}" class="h-48 w-full object-cover rounded-xl mb-3">
+
+    <h3 class="font-bold text-lg">${p.name}</h3>
+
+    <p class="text-gray-600 mb-2">Q${p.price}</p>
+
+    <p class="${p.stock?'text-green-600':'text-red-600'} font-semibold">
       ${p.stock?'Disponible':'Agotado'}
     </p>
 
-    <a href="https://wa.me/50244941796?text=Quiero_info_sobre_La Cap%20${p.name}" 
-    class="bg-green-500 text-white block text-center mt-2">
-    Comprar
+    <a href="https://wa.me/50233582515?text=Hola,%20quiero%20este%20producto:%20${p.name}%20-%20Q${p.price}" 
+    target="_blank"
+    class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-xl block text-center mt-3">
+    🛒 Comprar por WhatsApp
     </a>
 
     ${token ? `
-    <button onclick="del('${p._id}')" class="bg-red-500 text-white px-2 py-1 mt-2">Eliminar</button>
-    <button onclick="stock('${p._id}')" class="bg-yellow-500 text-white px-2 py-1 mt-2">Stock</button>
+    <button onclick="del('${p._id}')" class="bg-red-500 text-white px-2 py-1 mt-2 rounded">Eliminar</button>
+    <button onclick="stock('${p._id}')" class="bg-yellow-500 text-white px-2 py-1 mt-2 rounded">Stock</button>
     `:''}
+
   </div>`;
  });
 }
