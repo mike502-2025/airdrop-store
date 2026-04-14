@@ -42,7 +42,7 @@
 </main>
 
 <script>
-let token = '';
+let token = localStorage.getItem('token');
 let currentFilter = 'all';
 
 function filter(cat){
@@ -63,9 +63,11 @@ async function login(){
 
  if(res.ok){
    const data = await res.json();
-   token = data.token;
+   localStorage.setItem('token', data.token);
+token = data.token;
    document.getElementById('admin').classList.remove('hidden');
    alert('Modo admin activado');
+   load();
  } else {
    alert('Credenciales incorrectas');
  }
