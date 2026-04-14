@@ -33,10 +33,7 @@
 <input id="name" placeholder="Nombre" class="border p-2">
 <input id="price" type="number" placeholder="Precio" class="border p-2">
 <input id="image" placeholder="Imagen URL" class="border p-2">
-<input id="category" placeholder="Categoria (gorras, audifonos, relojes)" class="border p-2">
 <button onclick="addProduct()" class="bg-black text-white px-2 py-1">Agregar</button>
-<input id="newCategory" placeholder="Nueva categoria" class="border p-2">
-<button onclick="addCategory()" class="bg-blue-500 text-white px-3 py-1">Agregar Categoria</button>
 </div>
 
 <div id="products" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
@@ -77,23 +74,10 @@ token = data.token;
 
 // 📦 CARGAR PRODUCTOS
 async function load(){
-  loadCategories();
+ 
  const res = await fetch('/api/products');
  const data = await res.json();
  render(data);
-}
-// funcion categorias
-async function addCategory(){
- const name = document.getElementById('newCategory').value;
-
- await fetch('/api/categories', {
-  method:'POST',
-  headers:{'Content-Type':'application/json'},
-  body: JSON.stringify({name})
- });
-
- alert("Categoria agregada");
- loadCategories();
 }
 
 // 🎨 MOSTRAR
@@ -142,7 +126,6 @@ async function addProduct(){
  const name = document.getElementById('name');
  const price = document.getElementById('price');
  const image = document.getElementById('image');
- const category = document.getElementById('category'); // 🔥 clave
 
  await fetch('/api/products', {
   method:'POST',
@@ -154,12 +137,11 @@ async function addProduct(){
     name: name.value,
     price: price.value,
     image: image.value,
-    category: category.value || "otros", // 🔥 evita errores
     stock: true
   })
  });
 
- load(); // 🔥 recarga productos
+ load();
 }
 
 // 🗑 ELIMINAR
