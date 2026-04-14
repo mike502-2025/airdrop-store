@@ -8,9 +8,19 @@
 </head>
 <body class="bg-gray-100">
 
-<header class="bg-black text-white p-4 text-center text-3xl font-bold shadow-lg">
-AirDrop Store 🧢🎧
-<button onclick="login()" class="ml-4 bg-white text-black px-3 py-1 rounded-xl text-sm">Admin</button>
+<header class="bg-black text-white p-4 flex justify-between items-center">
+  <h1 class="text-2xl font-bold">AirDrop Store 🧢🎧⌚</h1>
+
+  <nav class="space-x-4">
+    <button onclick="filter('all')" class="hover:text-green-400">Todo</button>
+    <button onclick="filter('gorras')" class="hover:text-green-400">Gorras</button>
+    <button onclick="filter('audifonos')" class="hover:text-green-400">Audífonos</button>
+    <button onclick="filter('relojes')" class="hover:text-green-400">Relojes</button>
+  </nav>
+
+  <button onclick="login()" class="bg-white text-black px-3 py-1 rounded-xl">
+    Admin
+  </button>
 </header>
 
 <main class="p-6">
@@ -19,6 +29,7 @@ AirDrop Store 🧢🎧
 <input id="name" placeholder="Nombre" class="border p-2">
 <input id="price" type="number" placeholder="Precio" class="border p-2">
 <input id="image" placeholder="Imagen URL" class="border p-2">
+<input id="category" placeholder="Categoria (gorras, audifonos, relojes)" class="border p-2">
 <button onclick="addProduct()" class="bg-black text-white px-2 py-1">Agregar</button>
 </div>
 
@@ -28,6 +39,12 @@ AirDrop Store 🧢🎧
 
 <script>
 let token = '';
+let currentFilter = 'all';
+
+function filter(cat){
+  currentFilter = cat;
+  load();
+}
 
 // 🔐 LOGIN
 async function login(){
@@ -62,7 +79,13 @@ function render(products){
  const c = document.getElementById('products');
  c.innerHTML = '';
 
- products.forEach(p=>{
+ let filtered = products;
+
+ if(currentFilter !== 'all'){
+   filtered = products.filter(p => p.category === currentFilter);
+ }
+
+ filtered.forEach(p=>{
   c.innerHTML += `
   <div class="bg-white p-4 rounded-2xl shadow-lg hover:shadow-2xl transition">
 
@@ -103,6 +126,7 @@ async function addProduct(){
     name: name.value,
     price: price.value,
     image: image.value,
+    category: category.value,
     stock:true
   })
  });
