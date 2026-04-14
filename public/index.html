@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<h1 style="color:red;">CAMBIO DE PRUEBA 🔥</h1>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -9,9 +10,9 @@
 
 <header class="bg-black text-white p-4 flex flex-col md:flex-row items-center justify-between">
 
- <h1 ondblclick="secretLogin()" class="text-2xl font-bold mb-2 md:mb-0 cursor-pointer">
-  AirDrop Store 🧢🎧
-</h1>
+  <h1 class="text-2xl font-bold mb-2 md:mb-0">
+    AirDrop Store 🧢🎧⌚
+  </h1>
 
   <nav class="flex gap-4 text-sm md:text-base">
     <button onclick="filter('all')" class="hover:text-green-400">Todo</button>
@@ -20,7 +21,9 @@
     <button onclick="filter('relojes')" class="hover:text-green-400">Relojes</button>
   </nav>
 
-</button>
+  <button onclick="login()" class="bg-white text-black px-3 py-1 rounded-xl mt-2 md:mt-0">
+    Admin
+  </button>
 
 </header>
 
@@ -30,12 +33,8 @@
 <input id="name" placeholder="Nombre" class="border p-2">
 <input id="price" type="number" placeholder="Precio" class="border p-2">
 <input id="image" placeholder="Imagen URL" class="border p-2">
+<input id="category" placeholder="Categoria (gorras, audifonos, relojes)" class="border p-2">
 <button onclick="addProduct()" class="bg-black text-white px-2 py-1">Agregar</button>
-<select id="category" class="border p-2">
-  <option value="gorras">Gorras</option>
-  <option value="audifonos">Audífonos</option>
-  <option value="relojes">Relojes</option>
-</select>
 </div>
 
 <div id="products" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
@@ -43,27 +42,11 @@
 </main>
 
 <script>
-function secretLogin(){
- const clave = prompt("Acceso restringido");
-
- if(clave === "admin123"){
-   login();
- } else {
-   alert("Acceso denegado");
- }
-}
-
-window.onload = () => {
-  if(localStorage.getItem('token')){
-    document.getElementById('adminBtn').classList.remove('hidden');
-  }
-}
-
-let token = localStorage.getItem('token');
+let token = '';
 let currentFilter = 'all';
 
 function filter(cat){
-  currentFilter = cat.toLowerCase();
+  currentFilter = cat;
   load();
 }
 
@@ -80,11 +63,9 @@ async function login(){
 
  if(res.ok){
    const data = await res.json();
-   localStorage.setItem('token', data.token);
-token = data.token;
+   token = data.token;
    document.getElementById('admin').classList.remove('hidden');
    alert('Modo admin activado');
-   load();
  } else {
    alert('Credenciales incorrectas');
  }
@@ -92,23 +73,20 @@ token = data.token;
 
 // 📦 CARGAR PRODUCTOS
 async function load(){
- 
  const res = await fetch('/api/products');
  const data = await res.json();
  render(data);
 }
 
 // 🎨 MOSTRAR
- 
+function render(products){
  const c = document.getElementById('products');
  c.innerHTML = '';
 
  let filtered = products;
 
  if(currentFilter !== 'all'){
-   filtered = products.filter(p => 
-  (p.category || "").toLowerCase().trim() === currentFilter
-);
+   filtered = products.filter(p => p.category === currentFilter);
  }
 
  filtered.forEach(p=>{
@@ -142,24 +120,18 @@ async function load(){
 
 // ➕ AGREGAR
 async function addProduct(){
-
- const name = document.getElementById('name');
- const price = document.getElementById('price');
- const image = document.getElementById('image');
- const category = document.getElementById('category');
-
  await fetch('/api/products', {
   method:'POST',
   headers:{
     'Content-Type':'application/json',
-    'Authorization': token
+    'Authorization':token
   },
   body: JSON.stringify({
     name: name.value,
     price: price.value,
     image: image.value,
-    category: category.value.toLowerCase(),
-    stock: true
+    category: category.value,
+    stock:true
   })
  });
 
