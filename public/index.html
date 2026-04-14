@@ -7,35 +7,18 @@
 </head>
 <body class="bg-gray-100">
 
-<header class="bg-black text-white p-4 flex flex-col md:flex-row items-center justify-between">
-
-  <h1 ondblclick="secretLogin()" class="text-2xl font-bold cursor-pointer">
-  AirDrop Store 🧢🎧
-</h1>
-
-  <nav class="flex gap-4 text-sm md:text-base">
-    <button onclick="filter('all')" class="hover:text-green-400">Todo</button>
-    <button onclick="filter('Gorras')" class="hover:text-green-400">Gorras</button>
-    <button onclick="filter('Audífonos')" class="hover:text-green-400">Audífonos</button>
-    <button onclick="filter('Relojes')" class="hover:text-green-400">Relojes</button>
-  </nav>
-
-
+<header class="bg-black text-white p-4 text-center text-2xl font-bold">
+AirDrop 🧢🎧
+<button onclick="login()" class="ml-4 bg-white text-black px-2 py-1">Admin</button>
 </header>
 
 <main class="p-6">
 
 <div id="admin" class="hidden mb-4">
-  <input id="name" placeholder="Nombre" class="border p-2">
-  <input id="price" type="number" placeholder="Precio" class="border p-2">
-  <input id="image" placeholder="Imagen URL" class="border p-2">
-  <select id="category" class="border p-2">
-  <option value="Gorras">Gorras</option>
-  <option value="Audífonos">Audífonos</option>
-  <option value="Relojes">Relojes</option>
-</select>
-
-  <button onclick="addProduct()" class="bg-black text-white px-2 py-1">Agregar</button>
+<input id="name" placeholder="Nombre" class="border p-2">
+<input id="price" type="number" placeholder="Precio" class="border p-2">
+<input id="image" placeholder="Imagen URL" class="border p-2">
+<button onclick="addProduct()" class="bg-black text-white px-2 py-1">Agregar</button>
 </div>
 
 <div id="products" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
@@ -43,29 +26,7 @@
 </main>
 
 <script>
-window.onload = () => {
-  if(localStorage.getItem('token')){
-    document.getElementById('adminBtn').classList.remove('hidden');
-  }
-}
-
-function secretLogin(){
- const clave = prompt("Acceso restringido");
-
- if(clave === "Mike2026"){
-   login();
- } else {
-   alert("Acceso denegado");
- }
-}
-
 let token = '';
-let currentFilter = 'all';
-
-function filter(cat){
-  currentFilter = cat;
-  load();
-}
 
 // 🔐 LOGIN
 async function login(){
@@ -100,81 +61,46 @@ function render(products){
  const c = document.getElementById('products');
  c.innerHTML = '';
 
- let filtered = products;
-
-if (currentFilter !== 'all') {
-  filtered = products.filter(p =>
-    (p.category || '').toLowerCase().trim() === currentFilter.toLowerCase().trim()
-  );
-}
-
- filtered.forEach(p=>{
+ products.forEach(p=>{
   c.innerHTML += `
-  <div class="bg-white p-4 rounded-2xl shadow-lg hover:shadow-2xl transition">
-
-    <img src="${p.image}" class="h-48 w-full object-cover rounded-xl mb-3">
-
-    <h3 class="font-bold text-lg">${p.name}</h3>
-
-    <p class="text-gray-600 mb-2">Q${p.price}</p>
-
-    <p class="${p.stock?'text-green-600':'text-red-600'} font-semibold">
+  <div class="bg-white p-4 rounded shadow">
+    <img src="${p.image}" class="h-40 w-full object-cover">
+    <h3 class="font-bold">${p.name}</h3>
+    <p>Q${p.price}</p>
+    <p class="${p.stock?'text-green-600':'text-red-600'}">
       ${p.stock?'Disponible':'Agotado'}
     </p>
 
-    <a href="https://wa.me/50233582515?text=🛍️%20*Nuevo%20pedido*%0A%0A📦%20Producto:%20${p.name}%0A💰%20Precio:%20Q${p.price}%0A🖼️%20Imagen:%20${p.image}%0A%0A¿Sigue%20disponible?"
-   target="_blank"
-   class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-xl block text-center mt-4 font-semibold">
-   🛒 Comprar por WhatsApp
-</a>
+    <a href="https://wa.me/50244941796?text=Quiero_info_sobre_La Cap%20${p.name}" 
+    class="bg-green-500 text-white block text-center mt-2">
+    Comprar
+    </a>
 
     ${token ? `
-    <button onclick="del('${p._id}')" class="bg-red-500 text-white px-2 py-1 mt-2 rounded">Eliminar</button>
-    <button onclick="stock('${p._id}')" class="bg-yellow-500 text-white px-2 py-1 mt-2 rounded">Stock</button>
+    <button onclick="del('${p._id}')" class="bg-red-500 text-white px-2 py-1 mt-2">Eliminar</button>
+    <button onclick="stock('${p._id}')" class="bg-yellow-500 text-white px-2 py-1 mt-2">Stock</button>
     `:''}
-
   </div>`;
  });
 }
 
-// 🔥 CONECTAR INPUTS
-const name = document.getElementById('name');
-const price = document.getElementById('price');
-const image = document.getElementById('image');
-const category = document.getElementById('category');
-
 // ➕ AGREGAR
-async function addProduct() {
+async function addProduct(){
+ await fetch('/api/products', {
+  method:'POST',
+  headers:{
+    'Content-Type':'application/json',
+    'Authorization':token
+  },
+  body: JSON.stringify({
+    name: name.value,
+    price: price.value,
+    image: image.value,
+    stock:true
+  })
+ });
 
-  // validación básica
-  if (!name.value || !price.value || !image.value || !category.value) {
-    alert('Completa todos los campos');
-    return;
-  }
-
-  await fetch('/api/products', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': token
-    },
-    body: JSON.stringify({
-      name: name.value,
-      price: price.value,
-      image: image.value,
-      category: category.value.toLowerCase().trim(),
-      stock: true
-    })
-  });
-
-  // limpiar formulario
-  name.value = '';
-  price.value = '';
-  image.value = '';
-  category.value = '';
-
-  // recargar productos
-  load();
+ load();
 }
 
 // 🗑 ELIMINAR
