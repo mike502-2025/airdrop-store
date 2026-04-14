@@ -138,22 +138,28 @@ function render(products){
 
 // ➕ AGREGAR
 async function addProduct(){
+
+ const name = document.getElementById('name');
+ const price = document.getElementById('price');
+ const image = document.getElementById('image');
+ const category = document.getElementById('category'); // 🔥 clave
+
  await fetch('/api/products', {
   method:'POST',
   headers:{
     'Content-Type':'application/json',
-    'Authorization':token
+    'Authorization': token
   },
   body: JSON.stringify({
     name: name.value,
     price: price.value,
     image: image.value,
-    category: category.value,
-    stock:true
+    category: category.value || "otros", // 🔥 evita errores
+    stock: true
   })
  });
 
- load();
+ load(); // 🔥 recarga productos
 }
 
 // 🗑 ELIMINAR
