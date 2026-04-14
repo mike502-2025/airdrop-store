@@ -7,9 +7,23 @@
 </head>
 <body class="bg-gray-100">
 
-<header class="bg-black text-white p-4 text-center text-2xl font-bold">
-AirDrop 🧢🎧
-<button onclick="login()" class="ml-4 bg-white text-black px-2 py-1">Admin</button>
+<header class="bg-black text-white p-4 flex flex-col md:flex-row items-center justify-between">
+
+  <h1 class="text-2xl font-bold mb-2 md:mb-0">
+    AirDrop Store 🧢🎧⌚
+  </h1>
+
+  <nav class="flex gap-4 text-sm md:text-base">
+    <button onclick="filter('all')" class="hover:text-green-400">Todo</button>
+    <button onclick="filter('gorras')" class="hover:text-green-400">Gorras</button>
+    <button onclick="filter('audifonos')" class="hover:text-green-400">Audífonos</button>
+    <button onclick="filter('relojes')" class="hover:text-green-400">Relojes</button>
+  </nav>
+
+  <button onclick="login()" class="bg-white text-black px-3 py-1 rounded-xl mt-2 md:mt-0">
+    Admin
+  </button>
+
 </header>
 
 <main class="p-6">
@@ -18,6 +32,7 @@ AirDrop 🧢🎧
 <input id="name" placeholder="Nombre" class="border p-2">
 <input id="price" type="number" placeholder="Precio" class="border p-2">
 <input id="image" placeholder="Imagen URL" class="border p-2">
+<input id="category" placeholder="Categoria (gorras, audifonos, relojes)" class="border p-2">
 <button onclick="addProduct()" class="bg-black text-white px-2 py-1">Agregar</button>
 </div>
 
@@ -26,7 +41,13 @@ AirDrop 🧢🎧
 </main>
 
 <script>
-let token = '';
+let token = localStorage.getItem('token');
+let currentFilter = 'all';
+
+function filter(cat){
+  currentFilter = cat;
+  load();
+}
 
 // 🔐 LOGIN
 async function login(){
@@ -41,11 +62,13 @@ async function login(){
 
  if(res.ok){
    const data = await res.json();
-   token = data.token;
+   localStorage.setItem('token', data.token);
+token = data.token;
    document.getElementById('admin').classList.remove('hidden');
    alert('Modo admin activado');
  } else {
    alert('Credenciales incorrectas');
+   load();
  }
 }
 
@@ -61,17 +84,23 @@ function render(products){
  const c = document.getElementById('products');
  c.innerHTML = '';
 
- products.forEach(p=>{
+ let filtered = products;
+
+ if(currentFilter !== 'all'){
+   filtered = products.filter(p => p.category === currentFilter);
+ }
+
+ filtered.forEach(p=>{
   c.innerHTML += `
   <div class="bg-white p-4 rounded shadow">
     <img src="${p.image}" class="h-40 w-full object-cover">
-    <h3 class="font-bold">${p.name}</h3>
+    <h3 class="font-bold">$${p.name || "Producto sin nombre"}</h3>
     <p>Q${p.price}</p>
     <p class="${p.stock?'text-green-600':'text-red-600'}">
       ${p.stock?'Disponible':'Agotado'}
     </p>
 
-    <a href="https://wa.me/50244941796?text=Quiero_info_sobre_La Cap%20${p.name}" 
+    <a href="https://wa.me/50244941796?text=Quiero_info_sobre_La Cap%20$${p.name || "Producto sin nombre"}" 
     class="bg-green-500 text-white block text-center mt-2">
     Comprar
     </a>
@@ -96,6 +125,7 @@ async function addProduct(){
     name: name.value,
     price: price.value,
     image: image.value,
+    category: category.value,
     stock:true
   })
  });

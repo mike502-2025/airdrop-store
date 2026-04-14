@@ -20,7 +20,8 @@ const Product = mongoose.model('Product', {
   name: String,
   price: Number,
   image: String,
-  stock: Boolean
+  stock: Boolean,
+  category: String
 });
 
 // 🔐 LOGIN
