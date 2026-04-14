@@ -21,25 +21,8 @@ const Product = mongoose.model('Product', {
   price: Number,
   image: String,
   stock: Boolean,
-  category: String
-});
-const Category = mongoose.model('Category', {
-  name: String
 });
 
-// Obtener categorias
-app.get('/api/categories', async (req, res)=>{
- const cats = await Category.find();
- res.json(cats);
-});
-
-// Crear categoria
-app.post('/api/categories', async (req, res)=>{
- const { name } = req.body;
- const newCat = new Category({ name });
- await newCat.save();
- res.json(newCat);
-});
 
 // 🔐 LOGIN
 app.post('/api/login', (req, res) => {

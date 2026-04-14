@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<h1 style="color:red;">CAMBIO DE PRUEBA 🔥</h1>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -21,9 +20,9 @@
     <button onclick="filter('relojes')" class="hover:text-green-400">Relojes</button>
   </nav>
 
-  <button onclick="login()" class="bg-white text-black px-3 py-1 rounded-xl mt-2 md:mt-0">
-    Admin
-  </button>
+  <button id="adminBtn" onclick="login()" class="hidden">
+  Admin
+</button>
 
 </header>
 
@@ -41,6 +40,13 @@
 </main>
 
 <script>
+  
+window.onload = () => {
+  if(localStorage.getItem('token')){
+    document.getElementById('adminBtn').classList.remove('hidden');
+  }
+}
+
 let token = localStorage.getItem('token');
 let currentFilter = 'all';
 
