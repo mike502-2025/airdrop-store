@@ -115,11 +115,11 @@ function render(products){
       ${p.stock?'Disponible':'Agotado'}
     </p>
 
-    <a href="https://wa.me/50233582515?text=Hola,%20quiero%20este%20producto:%20${p.name}%20-%20Q${p.price}" 
-    target="_blank"
-    class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-xl block text-center mt-3">
-    🛒 Comprar por WhatsApp
-    </a>
+    <a href="https://wa.me/50233582515?text=🛍️%20*Nuevo%20pedido*%0A%0A📦%20Producto:%20${p.name}%0A💰%20Precio:%20Q${p.price}%0A🖼️%20Imagen:%20${p.image}%0A%0A¿Sigue%20disponible?"
+   target="_blank"
+   class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-xl block text-center mt-4 font-semibold">
+   🛒 Comprar por WhatsApp
+</a>
 
     ${token ? `
     <button onclick="del('${p._id}')" class="bg-red-500 text-white px-2 py-1 mt-2 rounded">Eliminar</button>
