@@ -27,7 +27,7 @@ const Product = mongoose.model('Product', {
 app.post('/api/login', (req, res) => {
   const { user, pass } = req.body;
 
-  if(user === 'admin' && pass === '1234'){
+  if(user === 'mike' && pass === '123456'){
     const token = jwt.sign({ user }, SECRET);
     res.json({ token });
   } else {
