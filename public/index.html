@@ -7,29 +7,20 @@
 </head>
 <body class="bg-gray-100">
 
-<header class="bg-black text-white p-4 flex items-center justify-between">
+<header class="bg-black text-white p-4 flex flex-col md:flex-row items-center justify-between">
 
-  <!-- IZQUIERDA (vacío para centrar) -->
-  <div class="w-1/3"></div>
-
- <h1 onclick="multiClickLogin()" 
-class="flex flex-col items-center justify-center text-center font-bold cursor-pointer">
-  
-  <img src="/logo.png" class="w-32 h-32 mb-2 object-contain">
-
-  <span class="text-xl md:text-2xl">
-    AirDrop Store
-  </span>
-
+ <h1 onclick="secretLogin()" class="text-2xl font-bold cursor-pointer">
+  AirDrop Store 🧢🎧
 </h1>
 
-  <!-- DERECHA (MENÚ) -->
-  <nav class="w-1/3 flex justify-end gap-4 text-sm">
+  <nav class="flex gap-4 text-sm md:text-base">
     <button onclick="filter('all')" class="hover:text-green-400">Todo</button>
     <button onclick="filter('gorras')" class="hover:text-green-400">Gorras</button>
     <button onclick="filter('audifonos')" class="hover:text-green-400">Audífonos</button>
     <button onclick="filter('relojes')" class="hover:text-green-400">Relojes</button>
   </nav>
+
+ <button onclick="login()" class="hidden">Admin</button>
 
 </header>
 
@@ -51,22 +42,19 @@ class="flex flex-col items-center justify-center text-center font-bold cursor-po
 let token = localStorage.getItem('token');
 let currentFilter = 'all';
 let clicks = 0;
-let timer;
 
 function secretLogin() {
   clicks++;
 
-  clearTimeout(timer); // reinicia el tiempo
-
   if (clicks === 4) {
-    login(); // entra al admin
-    clicks = 0;
+    login(); // llama tu login normal
+    clicks = 0; // reinicia
   }
 
-  // reinicia si pasa tiempo sin clicks
-  timer = setTimeout(() => {
+  // opcional: reiniciar si tarda mucho
+  setTimeout(() => {
     clicks = 0;
-  }, 1000);
+  }, 3000);
 }
 
 function filter(cat){
