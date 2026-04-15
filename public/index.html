@@ -17,12 +17,29 @@
   <img src="/logo.png" class="w-24 h-24 md:w-20 md:h-20 mb-2 object-contain">
 </h2>
 
-  <nav class="flex gap-4 text-sm md:text-base">
-    <button onclick="filter('all')" class="hover:text-green-400">Todo</button>
-    <button onclick="filter('gorras')" class="hover:text-green-400">Gorras</button>
-    <button onclick="filter('audifonos')" class="hover:text-green-400">Audífonos</button>
-    <button onclick="filter('relojes')" class="hover:text-green-400">Relojes</button>
-  </nav>
+  <nav class="flex gap-2 bg-gray-800 p-1 rounded-full">
+
+  <button onclick="filter('all')" id="btn-all"
+    class="px-4 py-1 rounded-full text-sm transition">
+    Todo
+  </button>
+
+  <button onclick="filter('gorras')" id="btn-gorras"
+    class="px-4 py-1 rounded-full text-sm transition">
+    Gorras
+  </button>
+
+  <button onclick="filter('audifonos')" id="btn-audifonos"
+    class="px-4 py-1 rounded-full text-sm transition">
+    Audífonos
+  </button>
+
+  <button onclick="filter('relojes')" id="btn-relojes"
+    class="px-4 py-1 rounded-full text-sm transition">
+    Relojes
+  </button>
+
+</nav> 
 
  <button onclick="login()" class="hidden">Admin</button>
 
@@ -63,7 +80,24 @@ function secretLogin() {
 
 function filter(cat){
   currentFilter = cat;
+  updateActiveButton(); // 👈 IMPORTANTE
   load();
+}
+
+function updateActiveButton() {
+  const botones = ['all', 'gorras', 'audifonos', 'relojes'];
+
+  botones.forEach(cat => {
+    const btn = document.getElementById('btn-' + cat);
+    
+    if (cat === currentFilter) {
+      btn.classList.add('bg-green-500', 'text-white');
+      btn.classList.remove('text-gray-300');
+    } else {
+      btn.classList.remove('bg-green-500', 'text-white');
+      btn.classList.add('text-gray-300');
+    }
+  });
 }
 
 // 🔐 LOGIN
@@ -95,6 +129,7 @@ async function load(){
  const data = await res.json();
  render(data);
 }
+updateActiveButton();
 
 // 🎨 MOSTRAR
 function render(products){
